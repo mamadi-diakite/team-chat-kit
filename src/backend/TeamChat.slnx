@@ -8,6 +8,8 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/TeamChat.Application.Tests/TeamChat.Application.Tests.csproj" />
+    <Project Path="tests/TeamChat.Domain.Tests/TeamChat.Domain.Tests.csproj" />
+    <Project Path="tests/TeamChat.Infrastructure.Tests/TeamChat.Infrastructure.Tests.csproj" />
     <Project Path="tests/TeamChat.DemoHost.Api.IntegrationTests/TeamChat.DemoHost.Api.IntegrationTests.csproj" />
   </Folder>
 </Solution>

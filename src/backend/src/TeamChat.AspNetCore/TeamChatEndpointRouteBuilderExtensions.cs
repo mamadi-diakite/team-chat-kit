@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-
 namespace TeamChat.AspNetCore;
 
 public static class TeamChatEndpointRouteBuilderExtensions

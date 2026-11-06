@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace TeamChat.DemoHost.Api.Controllers;
 
 [ApiController]

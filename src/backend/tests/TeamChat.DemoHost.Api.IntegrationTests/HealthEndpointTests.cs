@@ -1,13 +1,6 @@
-using System.Net;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using TeamChat.AspNetCore;
-
 namespace TeamChat.DemoHost.Api.IntegrationTests;
 
-public sealed class HealthEndpointTests(WebApplicationFactory<Program> factory)
-    : IClassFixture<WebApplicationFactory<Program>>
+public sealed class HealthEndpointTests(DemoHostApiFactory factory) : IClassFixture<DemoHostApiFactory>
 {
     [Theory]
     [InlineData("/api/health")]
@@ -24,9 +17,11 @@ public sealed class HealthEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
-    public void AddTeamChat_rejects_null_services()
+    public void AddTeamChat_rejects_missing_arguments()
     {
-        Assert.Throws<ArgumentNullException>(() => TeamChatServiceCollectionExtensions.AddTeamChat(null!));
+        Assert.Throws<ArgumentNullException>(() => TeamChatServiceCollectionExtensions.AddTeamChat(null!, _ => { }));
+        Assert.Throws<ArgumentNullException>(() => new ServiceCollection().AddTeamChat(null!));
+        Assert.Throws<ArgumentNullException>(() => new ServiceCollection().AddTeamChat(_ => { }));
     }
 
     [Fact]
@@ -36,11 +31,18 @@ public sealed class HealthEndpointTests(WebApplicationFactory<Program> factory)
     }
 
     [Fact]
-    public void AddTeamChat_returns_the_same_collection()
+    public void AddTeamChat_registers_the_storage_options()
     {
         var services = new ServiceCollection();
 
-        Assert.Same(services, services.AddTeamChat());
+        Assert.Same(services, services.AddTeamChat(options =>
+        {
+            options.ConnectionString = "Data Source=:memory:";
+            options.TablePrefix = "tc_";
+        }));
+        var storage = services.BuildServiceProvider().GetRequiredService<ChatStorageOptions>();
+        Assert.Equal("Data Source=:memory:", storage.ConnectionString);
+        Assert.Equal("tc_", storage.TablePrefix);
     }
 
     private sealed record HealthResponse(string Status);
