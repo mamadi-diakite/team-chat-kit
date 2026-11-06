@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\TeamChat.Application\TeamChat.Application.csproj" />
+  </ItemGroup>
+
+</Project>

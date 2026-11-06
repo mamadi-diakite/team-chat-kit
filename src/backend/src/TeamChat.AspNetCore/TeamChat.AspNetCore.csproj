@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TeamChat.Application\TeamChat.Application.csproj" />
+    <ProjectReference Include="..\TeamChat.Infrastructure\TeamChat.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

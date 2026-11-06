@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TeamChat.Application/TeamChat.Application.csproj" />
+    <Project Path="src/TeamChat.AspNetCore/TeamChat.AspNetCore.csproj" />
+    <Project Path="src/TeamChat.Domain/TeamChat.Domain.csproj" />
+    <Project Path="src/TeamChat.Infrastructure/TeamChat.Infrastructure.csproj" />
+    <Project Path="src/TeamChat.DemoHost.Api/TeamChat.DemoHost.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TeamChat.Application.Tests/TeamChat.Application.Tests.csproj" />
+    <Project Path="tests/TeamChat.DemoHost.Api.IntegrationTests/TeamChat.DemoHost.Api.IntegrationTests.csproj" />
+  </Folder>
+</Solution>
