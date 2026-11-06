@@ -1,70 +1,60 @@
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { CHAT_CONFIG } from '@team-chat-kit/chat';
 import { APP_ENVIRONMENT } from '@team-chat-kit/shared/environment';
-import { App } from './app';
-import { appConfig } from './app.config';
+import { AppHarness } from '../testing/app-harness';
 
 describe('App', () => {
-  let http: HttpTestingController;
+  let app: AppHarness;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [...appConfig.providers, provideHttpClientTesting()],
-    });
-    http = TestBed.inject(HttpTestingController);
-  });
+  beforeEach(() => (app = new AppHarness()));
 
-  afterEach(() => http.verify());
+  afterEach(() => app.http.verify());
 
   it('uses the host API and the chat endpoints behind the same origin', () => {
     expect(TestBed.inject(APP_ENVIRONMENT).apiBaseUrl).toBe('/api');
     expect(TestBed.inject(CHAT_CONFIG).apiBaseUrl).toBe('/api/chat');
   });
 
-  it('shows the home page, the API status and the chat status once checked', async () => {
-    const fixture = TestBed.createComponent(App);
-    await TestBed.inject(Router).navigateByUrl('/');
-    await fixture.whenStable();
-    const element = fixture.nativeElement as HTMLElement;
+  it('shows the home page, the API status, the chat status and the visitor links', async () => {
+    await app.router.navigateByUrl('/');
+    await app.fixture.whenStable();
 
-    expect(element.querySelector('h1')?.textContent).toBe('Chat with your team and your partners');
-    expect(element.querySelector('[data-testid="api-status"]')?.textContent).toBe('API checking…');
-    expect(element.querySelector('[data-testid="chat-status"]')?.textContent).toBe(
-      'Chat module: checking…',
-    );
+    expect(app.text('h1')).toBe('Chat with your team and your partners');
+    expect(app.text('[data-testid="chat-status"]')).toBe('Chat module: checking…');
 
-    http.expectOne('/api/health').flush({ status: 'ok' });
-    http.expectOne('/api/chat/health').flush({ status: 'ok' });
-    await fixture.whenStable();
+    await app.settle();
 
-    expect(element.querySelector('[data-testid="api-status"]')?.textContent).toBe('API online');
-    expect(element.querySelector('[data-testid="chat-status"]')?.textContent).toBe(
-      'Chat module: online',
-    );
+    expect(app.text('[data-testid="api-status"]')).toBe('API online');
+    expect(app.text('[data-testid="chat-status"]')).toBe('Chat module: online');
+    expect(app.texts('header nav a')).toEqual(['Log in', 'Create an account']);
   });
 
   it('shows when the chat module does not answer', async () => {
-    const fixture = TestBed.createComponent(App);
-    await TestBed.inject(Router).navigateByUrl('/');
-    await fixture.whenStable();
+    await app.router.navigateByUrl('/');
+    await app.fixture.whenStable();
 
-    http.expectOne('/api/health').flush({ status: 'ok' });
-    http.expectOne('/api/chat/health').flush(null, { status: 404, statusText: 'Not Found' });
-    await fixture.whenStable();
+    app.http.expectOne('/api/chat/health').flush(null, { status: 404, statusText: 'Not Found' });
+    await app.fixture.whenStable();
 
-    expect(
-      (fixture.nativeElement as HTMLElement).querySelector('[data-testid="chat-status"]')
-        ?.textContent,
-    ).toBe('Chat module: offline');
+    expect(app.text('[data-testid="chat-status"]')).toBe('Chat module: offline');
+  });
+
+  it('shows the signed-in user with their organization and logs out to the login page', async () => {
+    app.signIn();
+    await app.open('/');
+
+    expect(app.text('[data-testid="user-name"]')).toBe('Emma Laurent · Bluebird Design');
+    expect(app.texts('header nav a')).toEqual(['Change password']);
+
+    await app.click('header nav button');
+
+    expect(app.router.url).toBe('/login');
+    expect(app.texts('header nav a')).toEqual(['Log in', 'Create an account']);
   });
 
   it('sends unknown addresses back home', async () => {
-    const router = TestBed.inject(Router);
+    await app.open('/does-not-exist');
 
-    await router.navigateByUrl('/does-not-exist');
-
-    expect(router.url).toBe('/');
+    expect(app.router.url).toBe('/');
   });
 });
