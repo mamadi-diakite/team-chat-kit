@@ -14,10 +14,12 @@ public class DemoHostApiFactory : WebApplicationFactory<Program>
 
     protected virtual string SigningKey => TestSigningKey;
 
+    protected virtual string ConnectionString => $"Data Source={Path.Combine(_root, "app.db")}";
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment(EnvironmentName);
-        builder.UseSetting("ConnectionStrings:Default", $"Data Source={Path.Combine(_root, "app.db")}");
+        builder.UseSetting("ConnectionStrings:Default", ConnectionString);
         builder.UseSetting("Database:ApplyMigrationsOnStartup", "true");
         builder.UseSetting("Database:SeedDemoData", SeedDemoData.ToString());
         builder.UseSetting("Jwt:SigningKey", SigningKey);
@@ -50,4 +52,9 @@ public sealed class ProductionDemoDataApiFactory : DemoHostApiFactory
 public sealed class MissingSigningKeyApiFactory : DemoHostApiFactory
 {
     protected override string SigningKey => "";
+}
+
+public sealed class MissingConnectionStringApiFactory : DemoHostApiFactory
+{
+    protected override string ConnectionString => " ";
 }

@@ -7,6 +7,8 @@ public static class DependencyInjection
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddScoped<CurrentChatUserResolver>();
+        services.AddScoped<DirectoryService>();
+        services.AddScoped<ContactService>();
 
         return services;
     }

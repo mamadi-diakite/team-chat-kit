@@ -10,6 +10,7 @@ public static class DependencyInjection
         services.AddSingleton(storage);
         services.AddDbContext<ChatDbContext>(options => ChatDbContext.Configure(options, storage));
         services.TryAddSingleton(TimeProvider.System);
+        services.AddScoped<IContactRepository, ContactRepository>();
 
         return services;
     }

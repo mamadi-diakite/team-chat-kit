@@ -11,5 +11,6 @@ global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
+global using TeamChat.Application.Contacts;
 global using TeamChat.Domain;
 global using TeamChat.Infrastructure.Persistence;

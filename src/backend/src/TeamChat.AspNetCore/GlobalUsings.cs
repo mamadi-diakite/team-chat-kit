@@ -5,6 +5,8 @@ global using Microsoft.AspNetCore.Http.HttpResults;
 global using Microsoft.AspNetCore.Routing;
 global using Microsoft.Extensions.DependencyInjection;
 global using TeamChat.Application;
+global using TeamChat.Application.Contacts;
+global using TeamChat.Application.Directory;
 global using TeamChat.Application.Identity;
 global using TeamChat.Infrastructure;
 global using TeamChat.Infrastructure.Persistence;
