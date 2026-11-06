@@ -11,6 +11,9 @@ import { Shell } from '@team-chat-kit/shared/ui';
     <tck-shell appName="Team Chat Demo" [apiStatus]="apiStatus()">
       <ng-container shellNav>
         @if (user(); as user) {
+          <a routerLink="/directory" class="text-teal-700">Directory</a>
+          <a routerLink="/invitations" class="text-teal-700">Invitations</a>
+          <a routerLink="/contacts" class="text-teal-700">Contacts</a>
           <span class="text-slate-600" data-testid="user-name"
             >{{ user.displayName }} · {{ user.organizationName }}</span
           >

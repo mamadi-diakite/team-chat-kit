@@ -44,12 +44,42 @@ describe('App', () => {
     await app.open('/');
 
     expect(app.text('[data-testid="user-name"]')).toBe('Emma Laurent · Bluebird Design');
-    expect(app.texts('header nav a')).toEqual(['Change password']);
+    expect(app.texts('header nav a')).toEqual([
+      'Directory',
+      'Invitations',
+      'Contacts',
+      'Change password',
+    ]);
 
     await app.click('header nav button');
 
     expect(app.router.url).toBe('/login');
     expect(app.texts('header nav a')).toEqual(['Log in', 'Create an account']);
+  });
+
+  it.each(['/directory', '/invitations', '/contacts'])(
+    'asks visitors to log in before opening %s',
+    async (url) => {
+      await app.open(url);
+
+      expect(app.router.url).toBe(`/login?returnUrl=${encodeURIComponent(url)}`);
+    },
+  );
+
+  it('shows the chat pages to signed-in users, with their token', async () => {
+    app.signIn();
+
+    await app.open('/directory');
+    const directory = app.http.expectOne('/api/chat/directory');
+    expect(directory.request.headers.get('Authorization')).toBe('Bearer token-1');
+    directory.flush([]);
+    await app.open('/invitations');
+    app.http.expectOne('/api/chat/invitations').flush({ received: [], sent: [] });
+    await app.open('/contacts');
+    app.http.expectOne('/api/chat/contacts').flush([]);
+    await app.settle();
+
+    expect(app.text('h1')).toBe('Contacts');
   });
 
   it('sends unknown addresses back home', async () => {

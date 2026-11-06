@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { ChatContacts, ChatDirectory, ChatInvitations } from '@team-chat-kit/chat';
 import { authGuard, guestGuard } from '@team-chat-kit/shared/core';
 import { ChangePasswordPage } from './auth/change-password-page';
 import { LoginPage } from './auth/login-page';
@@ -24,6 +25,24 @@ export const routes: Routes = [
     component: ChangePasswordPage,
     canActivate: [authGuard],
     title: 'Change password · Team Chat Demo',
+  },
+  {
+    path: 'directory',
+    component: ChatDirectory,
+    canActivate: [authGuard],
+    title: 'Directory · Team Chat Demo',
+  },
+  {
+    path: 'invitations',
+    component: ChatInvitations,
+    canActivate: [authGuard],
+    title: 'Invitations · Team Chat Demo',
+  },
+  {
+    path: 'contacts',
+    component: ChatContacts,
+    canActivate: [authGuard],
+    title: 'Contacts · Team Chat Demo',
   },
   { path: '**', redirectTo: '' },
 ];
